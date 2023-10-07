@@ -1,0 +1,119 @@
+
+---
+# PV
+
+apiVersion: v1
+kind: PersistentVolume
+# 이름, 문자열, UID, 네임스페이스를 포함하여 오브젝트를 유일하게 구분지어 줄 데이터이다.
+# name 은 네임스페이스 상에서는 유일한 값이어야 한다.
+# label 은 특정 k8s 오브젝트를 나열하거나, 검색 시 유용하게 사용되는 데이터이다.
+metadata:
+  name: mysql-pv
+# 생성하고자 하는 오브젝트의 상태를 지정한다.
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Gi
+  accessModes:
+    # 단일 노드가 읽기-쓰기 모드로 볼륨을 마운트 한다는 것이다.
+    - ReadWriteOnce
+  # WARN: hostPath 옵션은 단일 노드 혹은 테스트 시에서만 사용하는 것이 좋다.
+  # 멀티 노드를 가진 클러스터를 지원하지 않는다. 
+  hostPath:
+    # 윈도우 환경일 경우 예시
+    # "/run/desktop/mnt/host/c/temp/testfiles"
+    path: "/mnt/data"
+    type: DirectoryOrCreate
+
+---
+# PVC
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+
+---
+# StatefulSet - Mariadb
+
+# 문제발생
+# 현재 init.db 에 넣은 쿼리문이 동작하지 않는다.
+# kubectl exec -it mysql-0 -- mysql -u root -p 으로 직접 create db 했음 (임시)
+# 
+
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql # 헤드리스 서비스 이름
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        # 서비스가 해당 label 을 찾는다.
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        # 가장 최신 버전 mysql 을 사용한다.
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+          # mysql 의 root passwrd 를 변경한다.
+          # 각 서비스의 설정 파일에 지정한 값과 일치해야한다.
+          - name: MYSQL_ROOT_PASSWORD
+            value: root
+        volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
+            # 데이터베이스가 지정한 경로에 생성된다.
+          - name: mysql-initdb
+            mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-cm
+
+---
+# ConfigMap
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-cm
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS order_db;
+    CREATE DATABASE IF NOT EXISTS payment_db;
+    CREATE DATABASE IF NOT EXISTS product_db;
+
+---
+# 스테이트풀셋 멤버의 안정적인 DNS 엔트리를 위한 헤드리스 서비스
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+  - port: 3306
+    name: mysql
+  clusterIP: None
+  selector:
+    app: mysql
