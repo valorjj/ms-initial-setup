@@ -168,8 +168,6 @@ spec:
       containers:
       - name: zipkin
         image: openzipkin/zipkin
-        ports:
-        - containerPort: 9411
 
 ---
 ## Service
