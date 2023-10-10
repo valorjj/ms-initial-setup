@@ -8,6 +8,7 @@ node {
         ])
     }
 
+
     stage('Deploy') {
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
