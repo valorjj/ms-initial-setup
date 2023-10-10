@@ -1,5 +1,5 @@
 node {
-    stage("Github Checkout") {
+    stage('Github Checkout') {
         checkout([$class: "GitSCM",
             branches: [[name: "*/main"]],
             extensions: [],
@@ -13,7 +13,7 @@ node {
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
             location: env.ZONE,
-            manifestPattern: 'k8s/',
+            manifestPattern: "k8s/*",
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true])
     }
