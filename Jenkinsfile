@@ -8,6 +8,7 @@ node {
         ])
     }
     stage('Deploy to GKE') {
+        // config-maps
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
@@ -16,7 +17,7 @@ node {
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true]
         )
-
+        // mysql
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
@@ -25,7 +26,7 @@ node {
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true]
         )
-
+        // redis
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
@@ -34,7 +35,7 @@ node {
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true]
         )
-
+        // zipkin
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
