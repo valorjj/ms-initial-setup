@@ -30,7 +30,7 @@ node {
         )
     }
     stage('Deploy to GKE: redis') {
-        // mysql
+        // redis
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
@@ -41,7 +41,7 @@ node {
         )
     }
     stage('Deploy to GKE: zipkin') {
-        // mysql
+        // zipkin
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
