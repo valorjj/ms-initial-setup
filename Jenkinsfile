@@ -32,18 +32,6 @@ node {
         )
     }
 
-    // stage('Deploy to GKE: redis') {
-    //     // redis
-    //     step([$class: 'KubernetesEngineBuilder',
-    //         projectId: env.PROJECT_ID,
-    //         clusterName: env.CLUSTER,
-    //         location: env.ZONE,
-    //         manifestPattern: './k8s/redis-deployment.yml',
-    //         credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
-    //         verifyDeployments: true]
-    //     )
-    // }
-
     stage('Deploy to GKE: zipkin') {
         // zipkin
         step([$class: 'KubernetesEngineBuilder',
@@ -55,4 +43,19 @@ node {
             verifyDeployments: true]
         )
     }
+
+    // ERROR: jenkins not reading this value
+    stage('Deploy to GKE: redis') {
+        // redis
+        step([$class: 'KubernetesEngineBuilder',
+            projectId: env.PROJECT_ID,
+            clusterName: env.CLUSTER,
+            location: env.ZONE,
+            manifestPattern: './k8s/redis-deployment.yml',
+            credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
+            verifyDeployments: true]
+        )
+    }
+
+
 }
