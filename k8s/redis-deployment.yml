@@ -2,10 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-app
-  labels:
-    app: redis-app
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: redis-app
@@ -32,11 +29,8 @@ kind: Service
 metadata:
   name: redis
 spec:
-  # 로드밸런서 IP 설정이 왜 없지? (GCP 내부 IP 설정?)
   selector:
     app: redis-app
   ports:
   - port: 6379
     targetPort: 6379
-
----
