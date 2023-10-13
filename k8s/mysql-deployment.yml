@@ -16,12 +16,6 @@ spec:
 ---
 # StatefulSet - Mariadb
 
-# 문제발생
-# 현재 init.db 에 넣은 쿼리문이 동작하지 않는다.
-# kubectl exec -it mysql-0 -- mysql -u root -p 으로 직접 create db 했음 (임시)
-# 
-
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

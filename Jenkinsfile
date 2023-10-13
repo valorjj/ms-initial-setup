@@ -7,13 +7,41 @@ node {
             url: "https://github.com/valorjj/ms-initial-setup.git"]]
         ])
     }
-    stage('Deploy') {
+    stage('Deploy to GKE') {
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
             location: env.ZONE,
-            manifestPattern: 'k8s/*',
+            manifestPattern: 'k8s/config-maps.yml',
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
-            verifyDeployments: true])
+            verifyDeployments: true]
+        )
+
+        step([$class: 'KubernetesEngineBuilder',
+            projectId: env.PROJECT_ID,
+            clusterName: env.CLUSTER,
+            location: env.ZONE,
+            manifestPattern: 'k8s/mysql-deployment.yml',
+            credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
+            verifyDeployments: true]
+        )
+
+        step([$class: 'KubernetesEngineBuilder',
+            projectId: env.PROJECT_ID,
+            clusterName: env.CLUSTER,
+            location: env.ZONE,
+            manifestPattern: 'k8s/redis-deployment.yml',
+            credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
+            verifyDeployments: true]
+        )
+
+        step([$class: 'KubernetesEngineBuilder',
+            projectId: env.PROJECT_ID,
+            clusterName: env.CLUSTER,
+            location: env.ZONE,
+            manifestPattern: 'k8s/zipkin-deployment.yml',
+            credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
+            verifyDeployments: true]
+        )
     }
 }
