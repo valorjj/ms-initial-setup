@@ -12,7 +12,7 @@ node {
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
             location: env.ZONE,
-            manifestPattern: './k8s/integrate.yml',
+            manifestPattern: 'k8s/*',
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true])
     }
