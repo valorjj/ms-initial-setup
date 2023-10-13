@@ -45,6 +45,8 @@ node {
     }
 
     // ERROR: jenkins not reading this value
+    // redis-deployment.yml -> causing error
+    // 
     stage('Deploy to GKE: redis') {
         // redis
         step([$class: 'KubernetesEngineBuilder',
