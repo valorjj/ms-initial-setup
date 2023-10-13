@@ -124,10 +124,10 @@ spec:
       containers:
       - name: redis-app
         image: redis:latest
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
         ports:
         - containerPort: 6379
         command:
@@ -168,6 +168,10 @@ spec:
       containers:
       - name: zipkin
         image: openzipkin/zipkin
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
 
 ---
 ## Service
