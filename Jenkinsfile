@@ -7,7 +7,7 @@ node {
             url: "https://github.com/valorjj/ms-initial-setup.git"]]
         ])
     }
-    stage('Deploy to GKE') {
+    stage('Deploy to GKE: config-maps') {
         // config-maps
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
@@ -17,6 +17,8 @@ node {
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true]
         )
+    }
+    stage('Deploy to GKE: mysql') {
         // mysql
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
@@ -26,7 +28,9 @@ node {
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true]
         )
-        // redis
+    }
+    stage('Deploy to GKE: redis') {
+        // mysql
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
@@ -35,7 +39,9 @@ node {
             credentialsId: env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL,
             verifyDeployments: true]
         )
-        // zipkin
+    }
+    stage('Deploy to GKE: zipkin') {
+        // mysql
         step([$class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
             clusterName: env.CLUSTER,
